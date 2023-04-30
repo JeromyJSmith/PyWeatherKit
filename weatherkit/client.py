@@ -87,15 +87,14 @@ class WKClient:
                 params["dailyEnd"] = dailyEnd.strftime("%Y-%m-%dT%XZ")
             else:
                 raise (TypeError("dailyEnd should be a datetime object"))
-            if currentAsOf is not None:
-                if type(currentAsOf) == datetime:
-                    params["currentAsOf"] = currentAsOf.strftime(
-                        "%Y-%m-%dT%XZ")
-                else:
-                    raise (TypeError(f"currentAsOf should be a datetime object"))
-            else:
+            if currentAsOf is None:
                 # User didn't select currentAsOf, assume is dailyStart
                 params["currentAsOf"] = dailyStart.strftime("%Y-%m-%dT%XZ")
+            elif type(currentAsOf) == datetime:
+                params["currentAsOf"] = currentAsOf.strftime(
+                    "%Y-%m-%dT%XZ")
+            else:
+                raise TypeError("currentAsOf should be a datetime object")
         for n in range(retries):
             try:
                 response = requests.get(url, headers=headers, params=params)
